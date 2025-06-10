@@ -1,0 +1,20 @@
+import sys
+
+def greet(name):
+    message = "Hello, " + name + "!"
+    if name == "world":
+        print(message)
+    else:
+        print("Nice to meet you, " + name)
+    return message
+
+class MyClass:
+    def __init__(self, value):
+        self.value = value
+        self.other_value = value * 2
+
+my_name = "Alice"
+result = greet(my_name) # Llamada a función
+# Esto es un comentario en Python
+# Otra línea de comentario
+print("Analysis complete.")

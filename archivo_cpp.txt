@@ -1,0 +1,10 @@
+
+using namespace std;
+int main(){
+    int numero;
+    cout << "Escribe un numero: " ;
+    cin >> numero ;
+    int* ptrNumero = &numero ;
+    cout << (*ptrNumero%2 == 0 ? "Es par" : "No es par") << endl ;
+    cout << ptrNumero ;
+}
