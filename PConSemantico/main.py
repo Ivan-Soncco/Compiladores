@@ -6,10 +6,17 @@ from semantic_analyzer import SemanticAnalyzer
 from semantic_line_analyzer import SemanticLineAnalyzer
 
 def print_ast(node, indent=0):
-    """Imprime el AST de forma legible"""
+    """Imprime el AST de forma legible (soporta listas internas)."""
     if node is None:
         return
-    
+
+    # ── Si recibimos una lista, recorremos sus elementos ──
+    if isinstance(node, list):
+        for item in node:
+            print_ast(item, indent)
+        return
+
+    # ── Nodo normal ──
     print("  " * indent + f"{node.type}: {node.value}")
     for child in node.children:
         print_ast(child, indent + 1)
@@ -31,10 +38,11 @@ def analyze_code(code):
     print("-" * 30)
     lexer = CPPLexer()
     tokens = lexer.tokenize(code)
-    
+    print(f"{'Token':12} | {'Valor'}")
     for token in tokens:
-        print(f"Token: {token.type:12} | Valor: {token.value}")
-    
+        print(f"{token.type:12} | {token.value}")
+        
+      
     # Análisis Sintáctico
     print("\n3. ANÁLISIS SINTÁCTICO:")
     print("-" * 30)
@@ -79,55 +87,60 @@ def analyze_code(code):
     print("\n" + "=" * 60)
 
 def main():
-    # Código C++ de ejemplo más complejo
+    # ——————————————————————————————————————————
+    # 1) Programa válido dentro del subconjunto
+    # ——————————————————————————————————————————
     complex_code = '''
-    #include <iostream>
-    
     int main() {
-        int x;
+        int x = 5;
         int y = 10;
-        x = 5;
-        int sum = x + y;
-        
+        int sum = 0;
+        int i = 0;
+        int j = 0;
+
+        sum = x + y;
+
         if (sum > 10) {
             cout << "Sum is greater than 10" << endl;
         } else {
             cout << "Sum is not greater than 10" << endl;
         }
-        
-        int i = 0;
+
         while (i < 3) {
             cout << i << endl;
             i = i + 1;
         }
-        
-        for (int j = 0; j < 5; j = j + 1) {
+
+        for (j = 0; j < 5; j = j + 1) {
             cout << "Loop iteration: " << j << endl;
         }
-        
+
         return 0;
     }
     '''
-    
-    # Código C++ de ejemplo con errores
+
+    # ——————————————————————————————————————————
+    # 2) Programa con errores semánticos
+    #    (pero sintácticamente correcto)
+    # ——————————————————————————————————————————
     error_code = '''
     int main() {
         int x = 5;
-        y = x + 3;
-        void z;
-        
+        y = x + 3;          // variable y no declarada
+        void z;             // objeto de tipo void no válido
+
         if (x > 2) {
             cout << "x is greater than 2" << endl;
         }
-        
-        return "hello";
+
+        return "hello";     // devuelve string en función int
     }
     '''
-    
+
     print("EJEMPLO 1: Código complejo válido")
     analyze_code(complex_code)
-    
-    print("\n\nEJEMPLO 2: Código con errores")
+
+    print("\\n\\nEJEMPLO 2: Código con errores")
     analyze_code(error_code)
 
 if __name__ == "__main__":
